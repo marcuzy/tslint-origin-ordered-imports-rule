@@ -1,4 +1,5 @@
+import bat = require('./bar');
 import * as events from 'events';
-const fs = require('fs');
 import * as bar from './bar';
-const bat = require('./bar');
+const fs = require('fs');
+

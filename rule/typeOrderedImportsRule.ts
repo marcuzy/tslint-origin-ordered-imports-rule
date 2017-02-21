@@ -18,21 +18,27 @@ export class Rule extends Lint.Rules.AbstractRule {
     };
 
     public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new TypeOrderedWalker(sourceFile, this.getOptions()));
+        return this.applyWithWalker(new TypeOrderedImportWalker(sourceFile, this.getOptions()));
     }
 }
 
-type SourceType = 'user' | 'lib';
+enum SourceType {
+    USER,
+    LIB
+}
 
-const sourceTypePriors: {[sourceType: string]: number} = {
-    lib: 0,
-    user: 1
+const flowRules = {
+    [SourceType.LIB]: [SourceType.USER, SourceType.LIB],
+    [SourceType.USER]: [SourceType.USER]
 };
 
 // The walker takes care of all the work.
-class TypeOrderedWalker extends Lint.RuleWalker {
-    protected prevSourceTypes: Array<SourceType> = [];
+class TypeOrderedImportWalker extends Lint.RuleWalker {
+    protected nextSourceTypeMayBe: Array<SourceType> = flowRules[SourceType.LIB];
 
+    /**
+     * For expressions like: import { A, B } from 'foo'
+     */
     public visitImportDeclaration(node: ts.ImportDeclaration) {
         this.check(node, node.moduleSpecifier.getText());
 
@@ -40,6 +46,9 @@ class TypeOrderedWalker extends Lint.RuleWalker {
         super.visitImportDeclaration(node);
     }
 
+    /**
+     * For expressions like: import foo = require('foo')
+     */
     public visitImportEqualsDeclaration(node: ts.ImportEqualsDeclaration) {
         let moduleName: string = '';
 
@@ -57,56 +66,44 @@ class TypeOrderedWalker extends Lint.RuleWalker {
         super.visitImportEqualsDeclaration(node);
     }
 
-    public visitCallExpression(node: ts.CallExpression) {
-        if (node.arguments != null && node.expression != null) {
-            const callExpressionText = node.expression.getText(this.getSourceFile());
-            if (callExpressionText === "require" && typeof node.arguments[0] === 'object') {
-                const moduleName: string =  node.arguments[0].getText();
-                this.check(node, moduleName);
-            }
-        }
-        super.visitCallExpression(node);
-    }
+    /**
+     * For expressions like: const foo = require('foo')
+     */
+    // public visitCallExpression(node: ts.CallExpression) {
+    //     if (node.arguments != null && node.expression != null) {
+    //         const callExpressionText = node.expression.getText(this.getSourceFile());
+    //         if (callExpressionText === "require" && typeof node.arguments[0] === 'object') {
+    //             const moduleName: string = node.arguments[0].getText();
+    //             this.check(node, moduleName);
+    //         }
+    //     }
+    //     super.visitCallExpression(node);
+    // }
 
+    // General deal
     protected check(node: ts.Node, source: string) {
-        source = this.removeQuotes(source);
+        const sourceType: SourceType = this.getSourceType(
+            this.removeQuotes(source)
+        );
 
-        const sourceType: SourceType = this.getSourceType(source);
-
-        console.log({sourceType, source });
-
-        if (this.prevSourceTypes.length === 0) {
-            this.prevSourceTypes.unshift(sourceType);
-            return;
+        if (this.nextSourceTypeMayBe.indexOf(sourceType) === -1) {
+            this.addFailureAtNode(node, Rule.FAILURE_STRING, null);
+        } else {
+            this.nextSourceTypeMayBe = flowRules[sourceType];
         }
-
-        let prior: number = sourceTypePriors[sourceType];
-
-        for (const prevSourceType of this.prevSourceTypes) {
-            const prevPrior: number = sourceTypePriors[prevSourceType];
-
-            console.log({prevSourceType, prior, prevPrior});
-
-            if (prevPrior > prior) {
-                this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING));
-                break;
-            } else {
-                prior = prevPrior;
-            }
-        }
-
-        this.prevSourceTypes.unshift(sourceType);
     }
 
     protected getSourceType(source: string): SourceType {
-        return source.trim().charAt(0) === '.' ? 'user' : 'lib';
+        return source.trim().charAt(0) === '.'
+            ? SourceType.USER
+            : SourceType.LIB;
     }
 
     protected removeQuotes(value: string): string {
-        // strip out quotes
         if (value && value.length > 1 && (value[0] === "'" || value[0] === "\"")) {
             value = value.substr(1, value.length - 2);
         }
+
         return value;
     }
 }
