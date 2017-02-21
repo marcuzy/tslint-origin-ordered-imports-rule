@@ -1,0 +1,21 @@
+{
+  "name": "tslint-custom-rule",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc --noImplicitAny rule/typeOrderedImportsRule.ts",
+    "tslint": "tslint --rules-dir rule/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^2.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.5",
+    "tslint": "^4.4.2"
+  }
+}
