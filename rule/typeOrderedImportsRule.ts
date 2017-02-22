@@ -1,19 +1,17 @@
-import * as ts from "typescript";
-import * as Lint from "tslint";
+import * as ts from 'typescript';
+import * as Lint from 'tslint';
 
 export class Rule extends Lint.Rules.AbstractRule {
-    public static FAILURE_STRING = "import of node_modules must be both then user's import";
+    public static FAILURE_STRING = `Import of node_modules must be higher than users import`;
 
     public static metadata: Lint.IRuleMetadata = {
-        ruleName: "type-ordered-imports",
-        description: "Disallows `/// <reference path=>` imports (use ES6-style imports instead).",
-        rationale: Lint.Utils.dedent`
-            Using \`/// <reference path=>\` comments to load other files is outdated.
-            Use ES6-style imports to reference other files.`,
-        optionsDescription: "Not configurable.",
+        ruleName: 'type-ordered-imports',
+        description: 'Strict order of imports.',
+        rationale: 'Helps maintain a readable style in your codebase.',
+        optionsDescription: 'Not configurable.',
         options: null,
-        optionExamples: ["true"],
-        type: "typescript",
+        optionExamples: ['true'],
+        type: 'typescript',
         typescriptOnly: false,
     };
 
@@ -41,6 +39,21 @@ class TypeOrderedImportWalker extends Lint.RuleWalker {
      */
     public visitImportDeclaration(node: ts.ImportDeclaration) {
         this.check(node, node.moduleSpecifier.getText());
+
+        // const start = node.getStart();
+        //
+        // const index = node.moduleSpecifier.getSourceFile().statements.indexOf(node as ts.Statement);
+        // const prevStatement = node.moduleSpecifier.getSourceFile().statements[index - 1];
+        // let prevStatementText = '';
+        // if (prevStatement) {
+        //     prevStatementText = prevStatement.getText();
+        // }
+        //
+        // this.getSourceFile().text
+        //
+        // console.log({start, index, prevStatementText: this.getSourceFile().text
+        // });
+
 
         // call the base version of this visitor to actually parse this node
         super.visitImportDeclaration(node);
@@ -100,7 +113,7 @@ class TypeOrderedImportWalker extends Lint.RuleWalker {
     }
 
     protected removeQuotes(value: string): string {
-        if (value && value.length > 1 && (value[0] === "'" || value[0] === "\"")) {
+        if (value && value.length > 1 && (value[0] === `'` || value[0] === `"`)) {
             value = value.substr(1, value.length - 2);
         }
 
