@@ -1,15 +1,19 @@
 {
   "name": "tslint-origin-ordered-imports-rule",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Custom rule for tslint.",
   "main": "dist/originOrderedImportsRule.js",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/marcuzy/tslint-origin-ordered-imports-rule.git"
+  },
   "scripts": {
     "build": "tsc",
     "tslint-example": "tslint -c example/tslint.json example/*.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["tslint", "rule", "imports", "imports origin", "typescript"],
+  "author": "Oleg Krasavin <t5633@ya.ru>",
   "license": "MIT",
   "dependencies": {
     "tslint": "^4.4.2",
