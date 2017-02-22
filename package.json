@@ -1,21 +1,21 @@
 {
-  "name": "tslint-custom-rule",
-  "version": "1.0.0",
+  "name": "tslint-origin-ordered-imports-rule",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/originOrderedImportsRule.js",
   "scripts": {
-    "compile": "tsc --noImplicitAny rule/typeOrderedImportsRule.ts",
-    "tslint": "tslint --rules-dir rule/",
+    "build": "tsc",
+    "tslint-example": "tslint -c example/tslint.json example/*.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "tslint": "^4.4.2",
     "typescript": "^2.1.6"
   },
   "devDependencies": {
-    "@types/node": "^7.0.5",
-    "tslint": "^4.4.2"
+    "@types/node": "^7.0.5"
   }
 }

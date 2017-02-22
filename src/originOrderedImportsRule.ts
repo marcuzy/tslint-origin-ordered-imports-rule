@@ -2,11 +2,11 @@ import * as ts from 'typescript';
 import * as Lint from 'tslint';
 
 export class Rule extends Lint.Rules.AbstractRule {
-    public static FAILURE_STRING = `Import of node_modules must be higher than users import`;
+    public static FAILURE_STRING = `Import of node_modules must be higher than users import.`;
 
     public static metadata: Lint.IRuleMetadata = {
-        ruleName: 'type-ordered-imports',
-        description: 'Strict order of imports.',
+        ruleName: 'origin-ordered-imports',
+        description: 'Strict order of imports (node_modules imports higher than users\'s imports).',
         rationale: 'Helps maintain a readable style in your codebase.',
         optionsDescription: 'Not configurable.',
         options: null,
@@ -16,7 +16,7 @@ export class Rule extends Lint.Rules.AbstractRule {
     };
 
     public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new TypeOrderedImportWalker(sourceFile, this.getOptions()));
+        return this.applyWithWalker(new OriginOrderedImportWalker(sourceFile, this.getOptions()));
     }
 }
 
@@ -30,8 +30,7 @@ const flowRules = {
     [SourceType.USER]: [SourceType.USER]
 };
 
-// The walker takes care of all the work.
-class TypeOrderedImportWalker extends Lint.RuleWalker {
+class OriginOrderedImportWalker extends Lint.RuleWalker {
     protected nextSourceTypeMayBe: Array<SourceType> = flowRules[SourceType.LIB];
 
     /**
@@ -40,22 +39,6 @@ class TypeOrderedImportWalker extends Lint.RuleWalker {
     public visitImportDeclaration(node: ts.ImportDeclaration) {
         this.check(node, node.moduleSpecifier.getText());
 
-        // const start = node.getStart();
-        //
-        // const index = node.moduleSpecifier.getSourceFile().statements.indexOf(node as ts.Statement);
-        // const prevStatement = node.moduleSpecifier.getSourceFile().statements[index - 1];
-        // let prevStatementText = '';
-        // if (prevStatement) {
-        //     prevStatementText = prevStatement.getText();
-        // }
-        //
-        // this.getSourceFile().text
-        //
-        // console.log({start, index, prevStatementText: this.getSourceFile().text
-        // });
-
-
-        // call the base version of this visitor to actually parse this node
         super.visitImportDeclaration(node);
     }
 
@@ -79,21 +62,6 @@ class TypeOrderedImportWalker extends Lint.RuleWalker {
         super.visitImportEqualsDeclaration(node);
     }
 
-    /**
-     * For expressions like: const foo = require('foo')
-     */
-    // public visitCallExpression(node: ts.CallExpression) {
-    //     if (node.arguments != null && node.expression != null) {
-    //         const callExpressionText = node.expression.getText(this.getSourceFile());
-    //         if (callExpressionText === "require" && typeof node.arguments[0] === 'object') {
-    //             const moduleName: string = node.arguments[0].getText();
-    //             this.check(node, moduleName);
-    //         }
-    //     }
-    //     super.visitCallExpression(node);
-    // }
-
-    // General deal
     protected check(node: ts.Node, source: string) {
         const sourceType: SourceType = this.getSourceType(
             this.removeQuotes(source)
@@ -120,4 +88,3 @@ class TypeOrderedImportWalker extends Lint.RuleWalker {
         return value;
     }
 }
-
