@@ -15,11 +15,9 @@
   "keywords": ["tslint", "rule", "imports", "imports origin", "typescript"],
   "author": "Oleg Krasavin <t5633@ya.ru>",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
+    "@types/node": "^7.0.5",
     "tslint": "^4.4.2",
     "typescript": "^2.1.6"
-  },
-  "devDependencies": {
-    "@types/node": "^7.0.5"
   }
 }
