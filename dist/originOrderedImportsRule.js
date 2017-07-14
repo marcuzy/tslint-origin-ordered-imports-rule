@@ -20,19 +20,19 @@ var Rule = (function (_super) {
     Rule.prototype.apply = function (sourceFile) {
         return this.applyWithWalker(new OriginOrderedImportWalker(sourceFile, this.getOptions()));
     };
+    Rule.FAILURE_STRING = "Import of node_modules must be higher than users import.";
+    Rule.metadata = {
+        ruleName: 'origin-ordered-imports',
+        description: 'Strict order of imports (node_modules imports higher than users\'s imports).',
+        rationale: 'Helps maintain a readable style in your codebase.',
+        optionsDescription: 'Not configurable.',
+        options: null,
+        optionExamples: ['true'],
+        type: 'typescript',
+        typescriptOnly: false,
+    };
     return Rule;
 }(Lint.Rules.AbstractRule));
-Rule.FAILURE_STRING = "Import of node_modules must be higher than users import.";
-Rule.metadata = {
-    ruleName: 'origin-ordered-imports',
-    description: 'Strict order of imports (node_modules imports higher than users\'s imports).',
-    rationale: 'Helps maintain a readable style in your codebase.',
-    optionsDescription: 'Not configurable.',
-    options: null,
-    optionExamples: ['true'],
-    type: 'typescript',
-    typescriptOnly: false,
-};
 exports.Rule = Rule;
 var SourceType;
 (function (SourceType) {
