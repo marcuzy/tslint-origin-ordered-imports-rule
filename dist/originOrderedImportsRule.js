@@ -97,4 +97,4 @@ var OriginOrderedImportWalker = (function (_super) {
     return OriginOrderedImportWalker;
 }(Lint.RuleWalker));
 var _a;
-//# sourceMappingURL=/home/oleg/code/experiments/tslint-custom-rule/dist/originOrderedImportsRule.js.map
+//# sourceMappingURL=/home/marcuzy/code_projects/tslint-origin-ordered-imports-rule/dist/originOrderedImportsRule.js.map
