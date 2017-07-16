@@ -2,11 +2,11 @@ import * as ts from 'typescript';
 import * as Lint from 'tslint';
 
 export class Rule extends Lint.Rules.AbstractRule {
-    public static FAILURE_STRING = `Import of node_modules must be higher than users import.`;
+    public static FAILURE_STRING = `Import of node_modules must be higher than custom import.`;
 
     public static metadata: Lint.IRuleMetadata = {
         ruleName: 'origin-ordered-imports',
-        description: 'Strict order of imports (node_modules imports higher than users\'s imports).',
+        description: 'Strict order of imports (node_modules imports higher than custom imports).',
         rationale: 'Helps maintain a readable style in your codebase.',
         optionsDescription: 'Not configurable.',
         options: null,
