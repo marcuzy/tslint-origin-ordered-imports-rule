@@ -1,7 +1,7 @@
 # TSLint Origin Ordered Imports Rule
 > Custom rule for tslint
 
-Strict order for imports (node_modules imports must be higher than users\'s imports).
+Strict order for imports (node_modules imports must be higher than custom imports).
 
 *Right:*
 ```ts
@@ -26,7 +26,9 @@ npm i -D tslint-origin-ordered-imports-rule
 
 Edit your `tslint.json` file:
 ```json
-"rulesDirectory": "node_modules/tslint-origin-ordered-imports-rule/dist",
+"rulesDirectory": [
+  "node_modules/tslint-origin-ordered-imports-rule/dist"
+],
 "rules": {
     "origin-ordered-imports": true
 }
