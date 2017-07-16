@@ -2,3 +2,4 @@ src
 example
 tsconfig.json
 .gitignore
+.idea
