@@ -13,6 +13,7 @@ export class Rule extends Lint.Rules.AbstractRule {
         optionExamples: ['true'],
         type: 'typescript',
         typescriptOnly: false,
+        hasFix: false
     };
 
     public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -68,7 +69,7 @@ class OriginOrderedImportWalker extends Lint.RuleWalker {
         );
 
         if (this.nextSourceTypeMayBe.indexOf(sourceType) === -1) {
-            this.addFailureAtNode(node, Rule.FAILURE_STRING, null);
+            this.addFailureAtNode(node, Rule.FAILURE_STRING);
         } else {
             this.nextSourceTypeMayBe = flowRules[sourceType];
         }
