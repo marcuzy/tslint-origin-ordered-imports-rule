@@ -36,7 +36,7 @@ Edit your `tslint.json` file:
   "node_modules/tslint-origin-ordered-imports-rule/dist"
 ],
 "rules": {
-    "origin-ordered-imports": [ true, { blankLinesRequired: true } ]
+    "origin-ordered-imports": [ true, "one-blank-line" ]
 }
 ```
 
