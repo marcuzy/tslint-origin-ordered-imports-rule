@@ -15,7 +15,7 @@ function values(obj: object): Array<string> {
 }
 
 enum BlankLinesOption {
-    anyNumber = 'any-number-of-blank-line',
+    anyNumber = 'any-number-of-blank-lines',
     no = 'no-blank-lines',
     one = 'one-blank-line',
     atLeastOne = 'at-least-one-blank-line'
