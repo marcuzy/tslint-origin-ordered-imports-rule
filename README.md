@@ -16,6 +16,12 @@ import MyClass from './my-class';
 
 import * as _ from 'lodash';
 ```
+Also, you can require having a blank line between node_modules and custom imports
+in such a case the next code is wrong too (take a look at `example/tslint.json`):
+```ts
+import * as _ from 'lodash';
+import MyClass from './my-class';
+```
 
 ## Installing / Getting started
 
@@ -30,7 +36,7 @@ Edit your `tslint.json` file:
   "node_modules/tslint-origin-ordered-imports-rule/dist"
 ],
 "rules": {
-    "origin-ordered-imports": true
+    "origin-ordered-imports": [ true, { blankLinesRequired: true } ]
 }
 ```
 
