@@ -1,8 +1,13 @@
-import * as events from 'events';
-import * as events from 'events';
-import * as events from 'events';
+import { A, B, C }  from 'lib1';
+import * as lib2 from 'lib2';
+import {
+    Q,
+    W
+    E
+} from 'lib3';
 
-import * as bar from './bar';
-import * as bar from './bar';
-import * as bar from './bar';
-import * as bar from './bar';
+import * as bar from './a';
+import {
+    V,
+    B
+} from './b';

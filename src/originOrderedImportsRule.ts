@@ -2,17 +2,7 @@ import * as ts from 'typescript';
 import * as Lint from 'tslint';
 import * as tsutils from 'tsutils';
 
-function values(obj: object): Array<string> {
-    const res = [];
-    
-    for(const key in obj) {
-        if (!obj.hasOwnProperty(key)) continue;
-        
-        res.push(obj[key]);
-    }
-    
-    return res;
-}
+import { values } from './utils';
 
 enum BlankLinesOption {
     anyNumber = 'any-number-of-blank-lines',
@@ -22,8 +12,6 @@ enum BlankLinesOption {
 }
 
 export class Rule extends Lint.Rules.AbstractRule {
-    public static FAILURE_STRING = `Import of node_modules must be higher than custom import.`;
-
     public static metadata: Lint.IRuleMetadata = {
         ruleName: 'origin-ordered-imports',
         description: 'Strict order of imports (node_modules imports should be higher than custom imports).',
@@ -129,7 +117,7 @@ class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankL
     
     protected checkOrder(node: AnyImportDeclaration, sourceType: SourceType): void {
         if (this.nextSourceTypeMayBe.indexOf(sourceType) === -1) {
-            this.addFailureAtNode(node, Rule.FAILURE_STRING);
+            this.addFailureAtNode(node, 'Import of node_modules must be higher than custom import.');
         } else {
             this.nextSourceTypeMayBe = flowRules[sourceType];
         }
@@ -143,7 +131,7 @@ class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankL
         const nodeLine = ts
             .getLineAndCharacterOfPosition(
                 this.getSourceFile(),
-                node.getStart(this.getSourceFile())
+                node.getEnd()
             )
             .line;
         
