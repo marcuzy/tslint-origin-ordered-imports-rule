@@ -1,0 +1,18 @@
+import { A, B, C }  from 'lib1';
+import * as lib2 from 'lib2';
+import {
+~~~~~~~~
+    Q,
+~~~~~~
+    W,
+~~~~~~
+    E
+~~~~~
+} from 'lib3';
+~~~~~~~~~~~~~~ [Blank lines between node_modules import and custom import]
+
+import * as bar from './a';
+import {
+    V,
+    B
+} from './b';

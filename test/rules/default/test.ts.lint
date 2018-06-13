@@ -1,0 +1,4 @@
+import * as bar from './bar';
+
+import * as events from 'events';
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Import of node_modules must be higher than custom import.]

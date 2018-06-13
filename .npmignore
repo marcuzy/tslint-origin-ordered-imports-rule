@@ -1,4 +1,5 @@
 src
+build
 example
 tsconfig.json
 .gitignore

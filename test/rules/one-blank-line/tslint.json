@@ -1,5 +1,5 @@
 {
-  "rulesDirectory": "../dist/",
+  "rulesDirectory": "../../../build/src/",
   "rules": {
     "origin-ordered-imports": [ true, "one-blank-line" ]
   }

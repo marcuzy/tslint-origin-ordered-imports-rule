@@ -16,12 +16,18 @@ import MyClass from './my-class';
 
 import * as _ from 'lodash';
 ```
-Also, you can require having a blank line between node_modules and custom imports
-in such a case the next code is wrong too (take a look at `example/tslint.json`):
+Set `one-blank-line` option to require a blank line between node_modules and custom imports
+in such a case the next code is wrong too:
 ```ts
 import * as _ from 'lodash';
 import MyClass from './my-class';
 ```
+Apart from `one-blank-line`, there are a few other options:
+* `no-blank-lines`
+* `at-least-one-blank-line`
+* `any-number-of-blank-lines`
+
+I guess it's enough for most cases.
 
 ## Installing / Getting started
 
@@ -40,6 +46,15 @@ Edit your `tslint.json` file:
 }
 ```
 
+## Testing
+
+To test the rule just run:
+
+```sh
+    npm run compile
+    npm run test
+```
+
 ## Licensing
 
-"The code in this project is licensed under MIT license."
+The code in this project is licensed under MIT license.

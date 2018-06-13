@@ -1,0 +1,6 @@
+{
+  "rulesDirectory": "../../../build/src/",
+  "rules": {
+    "origin-ordered-imports": [ true, "any-number-of-blank-lines" ]
+  }
+}
