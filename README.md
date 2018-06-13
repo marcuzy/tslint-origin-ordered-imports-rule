@@ -16,8 +16,8 @@ import MyClass from './my-class';
 
 import * as _ from 'lodash';
 ```
-Set `one-blank-line` option to require a blank line between node_modules and custom imports
-in such a case the next code is wrong too:
+Set `one-blank-line` option to require a blank line between node_modules and custom imports,
+in such a case, the next code is wrong too:
 ```ts
 import * as _ from 'lodash';
 import MyClass from './my-class';
@@ -51,8 +51,8 @@ Edit your `tslint.json` file:
 To test the rule just run:
 
 ```sh
-    npm run compile
-    npm run test
+npm run compile
+npm run test
 ```
 
 ## Licensing

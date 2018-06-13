@@ -1,6 +1,6 @@
 {
   "name": "tslint-origin-ordered-imports-rule",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Custom rule for tslint.",
   "main": "dist/originOrderedImportsRule.js",
   "repository": {
@@ -8,14 +8,15 @@
     "url": "https://github.com/marcuzy/tslint-origin-ordered-imports-rule.git"
   },
   "scripts": {
+    "prepublish": "npm-run-all -c compile test",
+
     "watch": "nodemon -e js,ts,lint,fix,json --watch src --watch test --exec \"npm run compile && npm run test\"",
-    "build": "tsc",
-    "tslint-example": "tslint -c example/tslint.json example/*.ts",
-    "test": "npm run test:rules",
-    "prepublish": "npm run build",
-    "compile": "npm-run-all -s compile:src compile:test",
+
+    "compile": "npm-run-all -s compile:lib compile:test",
     "compile:test": "tsc -p test",
-    "compile:src": "tsc -p src",
+    "compile:lib": "tsc -p src",
+
+    "test": "npm run test:rules",
     "test:rules": "node ./build/test/ruleTestRunner.js"
   },
   "keywords": [
