@@ -39,7 +39,7 @@ npm i -D tslint-origin-ordered-imports-rule
 Edit your `tslint.json` file:
 ```json
 "rulesDirectory": [
-  "node_modules/tslint-origin-ordered-imports-rule/dist"
+    "node_modules/tslint-origin-ordered-imports-rule/dist"
 ],
 "rules": {
     "origin-ordered-imports": [ true, "one-blank-line" ]
