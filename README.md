@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/marcuzy/tslint-origin-ordered-imports-rule.svg?branch=master)](https://travis-ci.com/marcuzy/tslint-origin-ordered-imports-rule)
+
 # TSLint Origin Ordered Imports Rule
 > Custom rule for tslint
 
