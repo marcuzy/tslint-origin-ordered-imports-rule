@@ -14,7 +14,7 @@
     "compile:test": "tsc -p test",
     "compile:lib": "tsc -p src",
     "test": "npm run test:rules",
-    "test:rules": "node ./build/test/ruleTestRunner.js"
+    "test:rules": "tslint --test ./test/**/**"
   },
   "keywords": [
     "tslint",
