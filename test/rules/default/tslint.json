@@ -1,5 +1,5 @@
 {
-  "rulesDirectory": "../../../build/src/",
+  "rulesDirectory": "../../../dist",
   "rules": {
     "origin-ordered-imports": [ true ]
   }
