@@ -70,6 +70,10 @@ class ModulesOrder {
 
         return true;
     }
+
+    getOrderItemIndex(path: string): number {
+        return this.orderItems.findIndex(item => item.check(path));
+    }
 }
 
 export class Rule extends Lint.Rules.AbstractRule {
@@ -238,102 +242,75 @@ class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankL
     }
 
     protected check(node: AnyImportDeclaration, source: string): void {
-        this.options.modulesOrder.check(source)
-
+        this.checkOrder(node, source);
+        
+        if (this.options.blankLines !== BlankLinesOption.anyNumber) {
+            this.checkEmptyLine(node, source);
+        }
+    }
+    
+    protected checkOrder(node: AnyImportDeclaration, source: string): void {
         if (!this.options.modulesOrder.check(source)) {
             this.addFailureAtNode(node, 'Import of node_modules must be higher than custom import.');
         }
-
-        // const sourceType: SourceType | string = this.getSourceType(source);
-    
-        // this.checkOrder(node, sourceType);
-
-        // const patternOrderItemIndex = this.options.order
-        //     .filter(item => values(ModuleType).indexOf(item) === -1)
-        //     .findIndex(item => {
-        //         const regexp = new RegExp(item);
-
-        //         return regexp.test(source);
-        //     });
-        
-        // if (this.options.blankLines !== BlankLinesOption.anyNumber) {
-        //     this.checkEmptyLine(node, sourceType);
-        // }
     }
     
-    // protected checkOrder(node: AnyImportDeclaration, sourceType: SourceType | string): void {
-    //     const valid = (() => {
-    //         this.nextSourceTypeMayBe.some(item => {
-    //            if (values(SourceType).indexOf(item) > -1) {
-    //                SourceType
-    //            } 
-    //         })
-    //     })();
-    //     if (!valid) {
-    //         this.addFailureAtNode(node, 'Import of node_modules must be higher than custom import.');
-    //     } else {
-    //         this.nextSourceTypeMayBe = this.getFlowRules()[sourceType];
-    //     }
-    // }
-    
-    // protected checkEmptyLine(node: AnyImportDeclaration, sourceType: SourceType): void {
-    //     if (sourceType === SourceType.USER) {
-    //         return;
-    //     }
-    
-    //     const nodeLine = ts
-    //         .getLineAndCharacterOfPosition(
-    //             this.getSourceFile(),
-    //             node.getEnd()
-    //         )
-    //         .line;
+    protected checkEmptyLine(node: AnyImportDeclaration, source: string): void {
+        const orderItemIndex = this.options.modulesOrder.getOrderItemIndex(source);
+
+        const nodeLine = ts
+            .getLineAndCharacterOfPosition(
+                this.getSourceFile(),
+                node.getEnd()
+            )
+            .line;
         
-    //     const nextNode = tsutils.getNextStatement(node);
+        const nextNode = tsutils.getNextStatement(node);
     
-    //     if (!nextNode || !anyImportSyntaxKind.has(nextNode.kind)) {
-    //         return;
-    //     }
+        if (!nextNode || !anyImportSyntaxKind.has(nextNode.kind)) {
+            return;
+        }
+
+        const nextSource = this.getModuleName(<AnyImportDeclaration>nextNode);
+        const nextOrderItemIndex = this.options.modulesOrder.getOrderItemIndex(nextSource);
+
+        if (nextOrderItemIndex <= orderItemIndex) {
+            return;
+        }
     
-    //     const nextSourceType = this.getSourceType(this.getModuleName(<AnyImportDeclaration>nextNode));
+        const nextNodeLine = ts
+            .getLineAndCharacterOfPosition(
+                this.getSourceFile(),
+                nextNode.getStart(this.getSourceFile())
+            )
+            .line;
     
-    //     if (nextSourceType === SourceType.LIB) {
-    //         return;
-    //     }
-    
-    //     const nextNodeLine = ts
-    //         .getLineAndCharacterOfPosition(
-    //             this.getSourceFile(),
-    //             nextNode.getStart(this.getSourceFile())
-    //         )
-    //         .line;
-    
-    //     const totalLinesCountBetweenNodes = nextNodeLine - nodeLine - 1;
-    
-    //     const blankLinesCount = totalLinesCountBetweenNodes - this.getNodeLeadingCommentedLinesCount(<AnyImportDeclaration>nextNode);
+        const totalLinesCountBetweenNodes = nextNodeLine - nodeLine - 1;
+        const blankLinesCount = totalLinesCountBetweenNodes - this.getNodeLeadingCommentedLinesCount(<AnyImportDeclaration>nextNode);
         
-    //     let failed = false;
-    //     let whyFailed = '';
+        let failed = false;
+        let whyFailed = '';
         
-    //     switch (this.options.blankLines) {
-    //         case BlankLinesOption.one:
-    //             failed = blankLinesCount !== 1;
-    //             whyFailed = 'One blank line required between node_modules import and custom import';
+        switch (this.options.blankLines) {
+            case BlankLinesOption.one:
+                failed = blankLinesCount !== 1;
+                whyFailed = 'One blank line required between node_modules import and custom import';
                 
-    //             break;
-    //         case BlankLinesOption.no:
-    //             failed = blankLinesCount !== 0;
-    //             whyFailed = 'Blank lines between node_modules import and custom import';
+                break;
+            case BlankLinesOption.no:
+                failed = blankLinesCount !== 0;
+                whyFailed = 'Blank lines between node_modules import and custom import';
                 
-    //             break;
-    //         case BlankLinesOption.atLeastOne:
-    //             failed = blankLinesCount === 0;
-    //             whyFailed = 'At least one blank line required between node_modules import and custom import';
-    //     }
+                break;
+            case BlankLinesOption.atLeastOne:
+                failed = blankLinesCount === 0;
+                whyFailed = 'At least one blank line required between node_modules import and custom import';
+        }
     
-    //     if (failed) {
-    //         this.addFailureAtNode(node, whyFailed);
-    //     }
-    // }
+        if (failed) {
+            this.addFailureAtNode(node, whyFailed);
+        }
+    }
     
     protected getNodeLeadingCommentedLinesCount(node: AnyImportDeclaration): number {
         const comments = ts.getLeadingCommentRanges(this.getSourceFile().text, node.pos);
