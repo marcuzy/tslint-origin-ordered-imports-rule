@@ -2,78 +2,14 @@ import * as ts from 'typescript';
 import * as Lint from 'tslint';
 import * as tsutils from 'tsutils';
 
-import { values, enumHas } from './utils';
+import { ModuleType, ModulesOrder } from './modulesOrder';
+import { values } from './utils';
 
 enum BlankLinesOption {
     anyNumber = 'any-number-of-blank-lines',
     no = 'no-blank-lines',
     one = 'one-blank-line',
     atLeastOne = 'at-least-one-blank-line'
-}
-
-enum ModuleType {
-    Lib = 'lib',
-    User = 'user',
-    CustomRule = 'custom-rule'
-}
-
-class ModulesOrderItem {
-    readonly type: ModuleType;
-    private readonly customRule?: RegExp;
-
-    constructor(optionsItem: string) {
-        if (enumHas(ModuleType, optionsItem)) {
-            this.type = optionsItem as any;
-        } else {
-            this.type = ModuleType.CustomRule;
-            this.customRule = new RegExp(optionsItem);
-        }
-    }
-
-    check(path: string): boolean {
-        if (this.type === ModuleType.CustomRule) {
-            return this.customRule.test(path);
-        }
-
-        const isUserModule = path.startsWith('/') || path.startsWith('.');
-            
-        if (this.type === ModuleType.User && isUserModule) {
-            return true;
-        }
-
-        if (this.type === ModuleType.Lib && !isUserModule) {
-            return true;
-        }
-
-        return false;
-    }
-}
-
-class ModulesOrder {
-    private orderPosition: number = 0;
-    private orderItems: Array<ModulesOrderItem>;
-
-    constructor(optionsItems: Array<string>) {
-        this.orderItems = optionsItems.map(_ => new ModulesOrderItem(_));
-    }
-
-    check(path: string): boolean {
-        const index = this.orderItems
-            .slice(this.orderPosition)
-            .findIndex(item => item.check(path));
-
-        if (index === -1) {
-            return false;
-        }
-
-        this.orderPosition += index;
-
-        return true;
-    }
-
-    getOrderItemIndex(path: string): number {
-        return this.orderItems.findIndex(item => item.check(path));
-    }
 }
 
 export class Rule extends Lint.Rules.AbstractRule {
@@ -159,43 +95,9 @@ export class Rule extends Lint.Rules.AbstractRule {
 
 type AnyImportDeclaration = ts.ImportDeclaration | ts.ImportEqualsDeclaration;
 
-// enum SourceType {
-//     USER,
-//     LIB
-// }
-
-// const flowRules = {
-//     [SourceType.LIB]: [SourceType.USER, SourceType.LIB],
-//     [SourceType.USER]: [SourceType.USER]
-// };
-
 const anyImportSyntaxKind = new Set([ts.SyntaxKind.ImportDeclaration, ts.SyntaxKind.ImportEqualsDeclaration]);
 
 class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankLinesOption, modulesOrder: ModulesOrder}> {
-    //protected nextSourceTypeMayBe: Array<SourceType> = flowRules[SourceType.LIB];
-    
-    // getFlowRules() {
-    //     const mt2st = (mt: ModuleType | string): any => {
-    //         switch (mt) {
-    //             case ModuleType.Lib: return SourceType.LIB;
-    //             case ModuleType.User: return SourceType.USER;
-    //             default:
-    //                 return mt;
-    //         }
-    //     }
-
-    //     const rules = {};
-
-    //     this.options.order.forEach((mt: ModuleType | string, index) => {
-    //         rules[mt2st(mt as ModuleType)] = this.options.order
-    //                 .slice(index)
-    //                 .map(mt2st);
-    //     });
-
-    //     return rules;
-
-    // }
-
     public walk(sourceFile: ts.SourceFile) {
         const cb = (node: ts.Node): void => {
             if (node.kind === ts.SyntaxKind.ImportDeclaration) {
@@ -325,24 +227,6 @@ class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankL
                 return count + (endLine - startLine + 1);
             }, 0);
     }
-
-    // protected getSourceType(source: string): SourceType | string {
-    //     const patternOrderItem = this.options.order
-    //         .filter(item => values(ModuleType).indexOf(item) === -1)
-    //         .find(item => {
-    //             const regexp = new RegExp(item);
-
-    //             return regexp.test(source);
-    //         });
-
-    //     if (!!patternOrderItem) {
-    //         return patternOrderItem;
-    //     }
-
-    //     return source.trim().charAt(0) === '.'
-    //         ? SourceType.USER
-    //         : SourceType.LIB;
-    // }
 
     protected removeQuotes(value: string): string {
         if (value && value.length > 1 && (value[0] === `'` || value[0] === `"`)) {
