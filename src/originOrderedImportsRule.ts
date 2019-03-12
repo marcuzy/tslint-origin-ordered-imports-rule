@@ -11,6 +11,12 @@ enum BlankLinesOption {
     atLeastOne = 'at-least-one-blank-line'
 }
 
+enum ModuleType {
+    nodeModules = 'node-modules',
+    customModules = 'custom-modules',
+    //custom = 'custom'
+}
+
 export class Rule extends Lint.Rules.AbstractRule {
     public static metadata: Lint.IRuleMetadata = {
         ruleName: 'origin-ordered-imports',
@@ -20,11 +26,42 @@ export class Rule extends Lint.Rules.AbstractRule {
             You can require having a blank line between node_modules and custom imports.
             It's \`${BlankLinesOption.anyNumber}\` by default, you can use next options: ${values(BlankLinesOption).map(_ => `\`${_}\``).join(', ')}
         `,
-        options: {
-            type: 'string',
-            enum: values(BlankLinesOption)
-        },
-        optionExamples: [ [ true ], [ true, "one-blank-line" ] ],
+        options: [
+            {
+                type: 'string',
+                enum: values(BlankLinesOption)
+            },
+            {
+                type: 'array',
+                items: {
+                    type: 'string',
+                    items: {
+                        oneOf: [
+                            {
+                                type: 'string',
+                                enum: values(ModuleType)
+                            },
+                            {
+                                type: 'string' // regexp
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        optionExamples: [ 
+            [ true ], 
+            [ true, BlankLinesOption.one ],
+            [ 
+                true, 
+                BlankLinesOption.one,
+                [
+                    ModuleType.nodeModules,
+                    '^@.+',
+                    ModuleType.customModules
+                ]
+            ] 
+        ],
         type: 'typescript',
         typescriptOnly: false,
         hasFix: false
@@ -35,6 +72,7 @@ export class Rule extends Lint.Rules.AbstractRule {
     }
     
     private get blankLines(): BlankLinesOption {
+        console.log('rule arguments', this.ruleArguments)
         if (this.ruleArguments[0] !== undefined) {
             return this.ruleArguments[0];
         }
