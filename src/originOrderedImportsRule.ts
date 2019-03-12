@@ -68,16 +68,26 @@ export class Rule extends Lint.Rules.AbstractRule {
     };
 
     public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new OriginOrderedImportWalker(sourceFile, this.ruleName, { blankLines: this.blankLines  }));
+        return this.applyWithWalker(new OriginOrderedImportWalker(sourceFile, this.ruleName, { blankLines: this.blankLines, order: this.order  }));
     }
     
     private get blankLines(): BlankLinesOption {
-        console.log('rule arguments', this.ruleArguments)
         if (this.ruleArguments[0] !== undefined) {
             return this.ruleArguments[0];
         }
         
         return BlankLinesOption.anyNumber;
+    }
+
+    private get order(): Array<any> { // TODO: change type
+        if (this.ruleArguments[1] !== undefined) {
+            return this.ruleArguments[1];
+        }
+        
+        return [
+            ModuleType.nodeModules,
+            ModuleType.customModules
+        ];
     }
 }
 
@@ -95,9 +105,31 @@ const flowRules = {
 
 const anyImportSyntaxKind = new Set([ts.SyntaxKind.ImportDeclaration, ts.SyntaxKind.ImportEqualsDeclaration]);
 
-class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankLinesOption }> {
+class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankLinesOption, order: Array<ModuleType | string> }> {
     protected nextSourceTypeMayBe: Array<SourceType> = flowRules[SourceType.LIB];
     
+    getFlowRules() {
+        const mt2st = (mt: ModuleType | string): any => {
+            switch (mt) {
+                case ModuleType.nodeModules: return SourceType.LIB;
+                case ModuleType.customModules: return SourceType.USER;
+                default:
+                    return mt;
+            }
+        }
+
+        const rules = {};
+
+        this.options.order.forEach((mt: ModuleType | string, index) => {
+            rules[mt2st(mt as ModuleType)] = this.options.order
+                    .slice(index)
+                    .map(mt2st);
+        });
+
+        return rules;
+
+    }
+
     public walk(sourceFile: ts.SourceFile) {
         const cb = (node: ts.Node): void => {
             if (node.kind === ts.SyntaxKind.ImportDeclaration) {
@@ -144,20 +176,35 @@ class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankL
     }
 
     protected check(node: AnyImportDeclaration, source: string): void {
-        const sourceType: SourceType = this.getSourceType(source);
+        const sourceType: SourceType | string = this.getSourceType(source);
     
         this.checkOrder(node, sourceType);
+
+        // const patternOrderItemIndex = this.options.order
+        //     .filter(item => values(ModuleType).indexOf(item) === -1)
+        //     .findIndex(item => {
+        //         const regexp = new RegExp(item);
+
+        //         return regexp.test(source);
+        //     });
         
         if (this.options.blankLines !== BlankLinesOption.anyNumber) {
             this.checkEmptyLine(node, sourceType);
         }
     }
     
-    protected checkOrder(node: AnyImportDeclaration, sourceType: SourceType): void {
-        if (this.nextSourceTypeMayBe.indexOf(sourceType) === -1) {
+    protected checkOrder(node: AnyImportDeclaration, sourceType: SourceType | string): void {
+        const valid = (() => {
+            this.nextSourceTypeMayBe.some(item => {
+               if (values(SourceType).indexOf(item) > -1) {
+                   SourceType
+               } 
+            })
+        })();
+        if (!valid) {
             this.addFailureAtNode(node, 'Import of node_modules must be higher than custom import.');
         } else {
-            this.nextSourceTypeMayBe = flowRules[sourceType];
+            this.nextSourceTypeMayBe = this.getFlowRules()[sourceType];
         }
     }
     
@@ -234,7 +281,19 @@ class OriginOrderedImportWalker extends Lint.AbstractWalker<{ blankLines: BlankL
             }, 0);
     }
 
-    protected getSourceType(source: string): SourceType {
+    protected getSourceType(source: string): SourceType | string {
+        const patternOrderItem = this.options.order
+            .filter(item => values(ModuleType).indexOf(item) === -1)
+            .find(item => {
+                const regexp = new RegExp(item);
+
+                return regexp.test(source);
+            });
+
+        if (!!patternOrderItem) {
+            return patternOrderItem;
+        }
+
         return source.trim().charAt(0) === '.'
             ? SourceType.USER
             : SourceType.LIB;

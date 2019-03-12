@@ -13,7 +13,7 @@
     "compile": "npm-run-all -s compile:lib",
     "compile:lib": "tsc -p src",
     "test": "npm run test:rules",
-    "test:rules": "tslint --test ./test/**/**"
+    "test:rules": "tslint --test ./test/rules/default/*"
   },
   "keywords": [
     "tslint",
