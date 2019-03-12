@@ -13,4 +13,4 @@ import {
 } from './b';
 
 import test from '@mycustom/something';
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Invalid order]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Import of node_modules must be higher than custom import.]

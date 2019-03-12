@@ -5,9 +5,9 @@
       true, 
       "one-blank-line",
       [
-        "node-modules",
+        "lib",
         "^@.+",
-        "custom-modules"
+        "user"
       ]
     ]
   }
