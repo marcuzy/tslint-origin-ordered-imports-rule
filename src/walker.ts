@@ -58,7 +58,7 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
     protected check(node: AnyImportDeclaration, source: string): void {
         this.checkOrder(node, source);
         
-        if (this.options.blankLines !== BlankLinesOption.anyNumber) {
+        if (this.options.blankLines !== BlankLinesOption.AnyNumber) {
             this.checkEmptyLine(node, source);
         }
     }
@@ -106,17 +106,17 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
         let whyFailed = '';
         
         switch (this.options.blankLines) {
-            case BlankLinesOption.one:
+            case BlankLinesOption.One:
                 failed = blankLinesCount !== 1;
                 whyFailed = 'One blank line required between node_modules import and custom import';
                 
                 break;
-            case BlankLinesOption.no:
+            case BlankLinesOption.No:
                 failed = blankLinesCount !== 0;
                 whyFailed = 'Blank lines between node_modules import and custom import';
                 
                 break;
-            case BlankLinesOption.atLeastOne:
+            case BlankLinesOption.AtLeastOne:
                 failed = blankLinesCount === 0;
                 whyFailed = 'At least one blank line required between node_modules import and custom import';
         }

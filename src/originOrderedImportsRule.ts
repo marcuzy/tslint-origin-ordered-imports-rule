@@ -6,10 +6,10 @@ import Walker from './walker';
 import { values } from './utils';
 
 export enum BlankLinesOption {
-    anyNumber = 'any-number-of-blank-lines',
-    no = 'no-blank-lines',
-    one = 'one-blank-line',
-    atLeastOne = 'at-least-one-blank-line'
+    AnyNumber = 'any-number-of-blank-lines',
+    No = 'no-blank-lines',
+    One = 'one-blank-line',
+    AtLeastOne = 'at-least-one-blank-line'
 }
 
 export class Rule extends Lint.Rules.AbstractRule {
@@ -19,7 +19,7 @@ export class Rule extends Lint.Rules.AbstractRule {
         rationale: 'Helps maintain a readable style in your codebase.',
         optionsDescription: Lint.Utils.dedent`
             You can require having a blank line between node_modules and custom imports.
-            It's \`${BlankLinesOption.anyNumber}\` by default, you can use next options: ${values(BlankLinesOption).map(_ => `\`${_}\``).join(', ')}
+            It's \`${BlankLinesOption.AnyNumber}\` by default, you can use next options: ${values(BlankLinesOption).map(_ => `\`${_}\``).join(', ')}
         `,
         options: [
             {
@@ -46,16 +46,22 @@ export class Rule extends Lint.Rules.AbstractRule {
         ],
         optionExamples: [ 
             [ true ], 
-            [ true, BlankLinesOption.one ],
+            [ true, BlankLinesOption.One ],
             [ 
                 true, 
-                BlankLinesOption.one,
+                [
+                    '^@.+',
+                ]
+            ],
+            [ 
+                true, 
+                BlankLinesOption.One,
                 [
                     ModuleType.Lib,
                     '^@.+',
                     ModuleType.User
                 ]
-            ] 
+            ],
         ],
         type: 'typescript',
         typescriptOnly: false,
@@ -63,33 +69,37 @@ export class Rule extends Lint.Rules.AbstractRule {
     };
 
     public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new Walker(sourceFile, this.ruleName, { 
-            blankLines: this.blankLines, 
-            modulesOrder: this.modulesOrder
-        }));
-    }
-    
-    private get blankLines(): BlankLinesOption {
-        if (this.ruleArguments[0] !== undefined) {
-            return this.ruleArguments[0];
-        }
-        
-        return BlankLinesOption.anyNumber;
-    }
+        const [arg1, arg2] = this.ruleArguments;
 
-    private get modulesOrder(): ModulesOrder { // TODO: change type
-        if (this.ruleArguments[1] !== undefined) {
-            
-        }
+        const blankLines: BlankLinesOption = (() => {
+            if (typeof arg1 === 'string') {
+               return arg1 as any;
+            }
 
-        const optionsItems = this.ruleArguments[1] !== undefined
-            ? this.ruleArguments[1]
-            : [
+            return BlankLinesOption.AnyNumber
+        })();
+
+        const modulesOrder: ModulesOrder = (() => {
+            if (Array.isArray(arg1)) {
+                return new ModulesOrder(arg1);
+            }
+
+            if (Array.isArray(arg2)) {
+                return new ModulesOrder(arg2);
+            }
+
+            return new ModulesOrder([
                 ModuleType.Lib,
                 ModuleType.User
-            ];
+            ]);
+        })();
 
-        return new ModulesOrder(optionsItems);
+        const walker = new Walker(sourceFile, this.ruleName, { 
+            blankLines, 
+            modulesOrder
+        });
+
+        return this.applyWithWalker(walker);
     }
 }
 
