@@ -11,7 +11,7 @@
     "prepublishOnly": "npm-run-all -c compile test",
     "watch": "nodemon -e js,ts,lint,fix,json --watch src --watch test --exec \"npm run compile && npm run test\"",
     "compile": "npm-run-all -s compile:lib",
-    "compile:lib": "tsc -p src",
+    "compile:lib": "tsc",
     "test": "npm run test:rules",
     "test:rules": "tslint --test ./test/rules/**"
   },

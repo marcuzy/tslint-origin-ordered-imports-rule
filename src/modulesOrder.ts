@@ -1,5 +1,32 @@
 import { enumHas } from './utils';
 
+export default class ModulesOrder {
+    private orderPosition: number = 0;
+    private orderItems: Array<ModulesOrderItem>;
+
+    constructor(optionsItems: Array<string>) {
+        this.orderItems = optionsItems.map(_ => new ModulesOrderItem(_));
+    }
+
+    check(path: string): boolean {
+        const index = this.orderItems
+            .slice(this.orderPosition)
+            .findIndex(item => item.check(path));
+
+        if (index === -1) {
+            return false;
+        }
+
+        this.orderPosition += index;
+
+        return true;
+    }
+
+    getOrderItemIndex(path: string): number {
+        return this.orderItems.findIndex(item => item.check(path));
+    }
+}
+
 export enum ModuleType {
     Lib = 'lib',
     User = 'user',
@@ -35,32 +62,5 @@ export class ModulesOrderItem {
         }
 
         return false;
-    }
-}
-
-export class ModulesOrder {
-    private orderPosition: number = 0;
-    private orderItems: Array<ModulesOrderItem>;
-
-    constructor(optionsItems: Array<string>) {
-        this.orderItems = optionsItems.map(_ => new ModulesOrderItem(_));
-    }
-
-    check(path: string): boolean {
-        const index = this.orderItems
-            .slice(this.orderPosition)
-            .findIndex(item => item.check(path));
-
-        if (index === -1) {
-            return false;
-        }
-
-        this.orderPosition += index;
-
-        return true;
-    }
-
-    getOrderItemIndex(path: string): number {
-        return this.orderItems.findIndex(item => item.check(path));
     }
 }
