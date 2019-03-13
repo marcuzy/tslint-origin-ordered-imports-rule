@@ -5,6 +5,17 @@ export default class ModulesOrder {
     private orderItems: Array<ModulesOrderItem>;
 
     constructor(optionsItems: Array<string>) {
+        const hasLib = optionsItems.some(_ => _ === ModuleType.Lib);
+        const hasUser = optionsItems.some(_ => _ === ModuleType.User);
+
+        if (!hasLib) {
+            optionsItems = [ModuleType.Lib, ...optionsItems];
+        }
+
+        if (!hasUser) {
+            optionsItems = [ModuleType.User, ...optionsItems];
+        }
+
         this.orderItems = optionsItems.map(_ => new ModulesOrderItem(_));
     }
 
