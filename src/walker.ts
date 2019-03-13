@@ -65,7 +65,10 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
     
     protected checkOrder(node: AnyImportDeclaration, source: string): void {
         if (!this.options.modulesOrder.check(source)) {
-            this.addFailureAtNode(node, 'Import of node_modules must be higher than custom import.');
+            const current = this.options.modulesOrder.getOrderItem(source);
+            const prev = this.options.modulesOrder.getPrevOrderItem();
+
+            this.addFailureAtNode(node, `Check imports order ("${ current.getTitle() }" must be higher than "${ prev.getTitle() }")`);
         }
     }
     

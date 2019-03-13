@@ -36,6 +36,16 @@ export default class ModulesOrder {
     getOrderItemIndex(path: string): number {
         return this.orderItems.findIndex(item => item.check(path));
     }
+
+    // TODO: fix
+    getOrderItem(path: string): ModulesOrderItem {
+        return this.orderItems.find(item => item.check(path));
+    }
+
+    // TODO: fix
+    getPrevOrderItem(): ModulesOrderItem {
+        return this.orderItems[this.orderPosition];
+    }
 }
 
 export enum ModuleType {
@@ -73,5 +83,16 @@ export class ModulesOrderItem {
         }
 
         return false;
+    }
+
+    getTitle(): string {
+        switch(this.type) {
+            case ModuleType.Lib:
+                return 'Core/node_modules';
+            case ModuleType.User:
+                return 'User module';
+            case ModuleType.CustomRule:
+                return `Module with custom rule: ${this.customRule.toString()}`;
+        }
     }
 }

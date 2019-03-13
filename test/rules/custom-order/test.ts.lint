@@ -13,4 +13,4 @@ import {
 } from './b';
 
 import test from '@mycustom/something';
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Import of node_modules must be higher than custom import.]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Check imports order ("Module with custom rule: ^@.+" must be higher than "User module")]
