@@ -68,7 +68,7 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
             const current = this.options.modulesOrder.findImportGroup(source);
             const prev = this.options.modulesOrder.getCurrentImportGroup();
 
-            this.addFailureAtNode(node, `Check imports order ("${ current.getTitle() }" must be higher than "${ prev.getTitle() }")`);
+            this.addFailureAtNode(node, `Check imports order (Import of "${ current.getTitle() }" must be higher than import of "${ prev.getTitle() }")`);
         }
     }
     

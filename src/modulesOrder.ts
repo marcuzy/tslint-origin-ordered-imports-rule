@@ -101,7 +101,7 @@ export class ImportGroup {
     getTitle(): string {
         switch(this.type) {
             case ModuleType.Lib:
-                return 'Core/node_modules';
+                return 'NodeJS Core module / node_modules';
             case ModuleType.User:
                 return 'User module';
             case ModuleType.CustomRule:

@@ -1,4 +1,4 @@
 import * as bar from './bar';
 
 import * as events from 'events';
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Check imports order ("Core/node_modules" must be higher than "User module")]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Check imports order (Import of "NodeJS Core module / node_modules" must be higher than import of "User module")]
