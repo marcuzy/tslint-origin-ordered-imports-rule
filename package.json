@@ -1,7 +1,7 @@
 {
   "name": "tslint-origin-ordered-imports-rule",
   "version": "1.1.2",
-  "description": "Custom rule for tslint.",
+  "description": "tslint rule to check order of imports",
   "main": "dist/originOrderedImportsRule.js",
   "repository": {
     "type": "git",
@@ -20,6 +20,8 @@
     "rule",
     "imports",
     "imports origin",
+    "imports order",
+    "check imports",
     "typescript"
   ],
   "author": "Oleg Krasavin <t5633@ya.ru>",
