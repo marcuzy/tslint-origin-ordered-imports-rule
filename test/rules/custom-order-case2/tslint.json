@@ -3,12 +3,11 @@
   "rules": {
     "origin-ordered-imports": [ 
       true, 
-      "one-blank-line",
+      "at-least-one-blank-line",
       [
-        "lib",
         "^@.+",
         "user",
-        "^another"
+        "lib"
       ]
     ]
   }

@@ -8,8 +8,8 @@
     "url": "https://github.com/marcuzy/tslint-origin-ordered-imports-rule.git"
   },
   "scripts": {
-    "prepublishOnly": "npm-run-all -c compile test",
-    "watch": "nodemon -e js,ts,lint,fix,json --watch src --watch test --exec \"npm run compile && npm run test\"",
+    "prepublishOnly": "rm -rf ./dist && npm-run-all -c compile test",
+    "watch": "nodemon --delay 3s -e js,ts,lint,fix,json --watch src --watch test --exec \"npm run compile && npm run test\"",
     "compile": "npm-run-all -s compile:lib",
     "compile:lib": "tsc",
     "test": "npm run test:rules",

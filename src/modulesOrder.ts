@@ -1,50 +1,63 @@
 import { enumHas } from './utils';
 
 export default class ModulesOrder {
-    private orderPosition: number = 0;
-    private orderItems: Array<ModulesOrderItem>;
+    private groupIndex: number = 0;
+    private readonly importGroups: Array<ImportGroup>;
 
     constructor(optionsItems: Array<string>) {
         const hasLib = optionsItems.some(_ => _ === ModuleType.Lib);
         const hasUser = optionsItems.some(_ => _ === ModuleType.User);
 
         if (!hasLib) {
-            optionsItems = [ModuleType.Lib, ...optionsItems];
+            optionsItems = [ ModuleType.Lib, ...optionsItems ];
         }
 
         if (!hasUser) {
-            optionsItems = [ModuleType.User, ...optionsItems];
+            optionsItems = [ ...optionsItems, ModuleType.User ];
         }
 
-        this.orderItems = optionsItems.map(_ => new ModulesOrderItem(_));
+        this.importGroups = optionsItems.map(_ => new ImportGroup(_));
     }
 
     check(path: string): boolean {
-        const index = this.orderItems
-            .slice(this.orderPosition)
+        const index = this.importGroups
+            .slice(this.groupIndex)
             .findIndex(item => item.check(path));
 
         if (index === -1) {
             return false;
         }
 
-        this.orderPosition += index;
+        this.groupIndex += index;
 
         return true;
     }
 
-    getOrderItemIndex(path: string): number {
-        return this.orderItems.findIndex(item => item.check(path));
+    findOrderItemIndex(path: string): number {
+        return this.findImportGroupIndexWith(index => index, path);
     }
 
-    // TODO: fix
-    getOrderItem(path: string): ModulesOrderItem {
-        return this.orderItems.find(item => item.check(path));
+    findImportGroup(path: string): ImportGroup {
+        return this.findImportGroupIndexWith(index => this.importGroups[index], path);
     }
 
-    // TODO: fix
-    getPrevOrderItem(): ModulesOrderItem {
-        return this.orderItems[this.orderPosition];
+    getCurrentImportGroup(): ImportGroup {
+        return this.importGroups[this.groupIndex];
+    }
+
+    private findImportGroupIndexWith<T>(customizer: (index: number) => T , path: string): T {
+        // built-in ModuleTypes can intersect with CustomRules so first we try to find something among CustomRules
+        const customIndex = this.importGroups
+            .findIndex(item => item.type === ModuleType.CustomRule && item.check(path));
+        
+        if (customIndex > -1) {
+            return customizer(customIndex);
+        }
+
+        return customizer(
+            this.importGroups
+                .findIndex(item => item.check(path))
+        );
     }
 }
 
@@ -54,7 +67,7 @@ export enum ModuleType {
     CustomRule = 'custom-rule'
 }
 
-export class ModulesOrderItem {
+export class ImportGroup {
     readonly type: ModuleType;
     private readonly customRule?: RegExp;
 

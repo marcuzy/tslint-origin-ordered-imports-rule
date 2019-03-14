@@ -65,15 +65,15 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
     
     protected checkOrder(node: AnyImportDeclaration, source: string): void {
         if (!this.options.modulesOrder.check(source)) {
-            const current = this.options.modulesOrder.getOrderItem(source);
-            const prev = this.options.modulesOrder.getPrevOrderItem();
+            const current = this.options.modulesOrder.findImportGroup(source);
+            const prev = this.options.modulesOrder.getCurrentImportGroup();
 
             this.addFailureAtNode(node, `Check imports order ("${ current.getTitle() }" must be higher than "${ prev.getTitle() }")`);
         }
     }
     
     protected checkEmptyLine(node: AnyImportDeclaration, source: string): void {
-        const orderItemIndex = this.options.modulesOrder.getOrderItemIndex(source);
+        const orderItemIndex = this.options.modulesOrder.findOrderItemIndex(source);
 
         const nodeLine = ts
             .getLineAndCharacterOfPosition(
@@ -89,7 +89,7 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
         }
 
         const nextSource = this.getModuleName(<AnyImportDeclaration>nextNode);
-        const nextOrderItemIndex = this.options.modulesOrder.getOrderItemIndex(nextSource);
+        const nextOrderItemIndex = this.options.modulesOrder.findOrderItemIndex(nextSource);
 
         if (nextOrderItemIndex <= orderItemIndex) {
             return;
