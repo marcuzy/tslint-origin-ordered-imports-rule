@@ -15,7 +15,7 @@ export enum BlankLinesOption {
 export class Rule extends Lint.Rules.AbstractRule {
     public static metadata: Lint.IRuleMetadata = {
         ruleName: 'origin-ordered-imports',
-        description: 'Strict order for import groups (`NodeJS/node_modules` group must be higher than `User modules` group) + your own groups defined using regexps.',
+        description: 'Strict order for imports (Import of `NodeJS Core module / node_modules` must be higher than import of `User module`) + your own import groups defined using regexps.',
         rationale: 'Helps maintain a readable style in your codebase.',
         optionsDescription: Lint.Utils.dedent`
             You can require having a blank line between import groups.
