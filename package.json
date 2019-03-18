@@ -1,6 +1,6 @@
 {
   "name": "tslint-origin-ordered-imports-rule",
-  "version": "1.2.0-beta.0",
+  "version": "1.2.0-beta.1",
   "description": "tslint rule to check order of imports",
   "main": "dist/originOrderedImportsRule.js",
   "repository": {
