@@ -1,0 +1,20 @@
+import test from '@mycustom/something';
+
+
+
+
+import * as bar from './a';
+import {
+    V,
+    B
+} from './b';
+
+
+import { A, B, C }  from 'lib1';
+import * as lib2 from 'lib2';
+import {
+    Q,
+    W,
+    E
+} from 'lib3';
+

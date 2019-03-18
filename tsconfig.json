@@ -1,14 +1,21 @@
 {
+  "outDir":  "./dist",
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "isolatedModules": false,
-    "lib": ["es6"],
+    "lib": [
+      "es6",
+      "es2017.string",
+      "es2017.object",
+      "es2016.array.include",
+      "es2015.iterable"
+    ],
     "mapRoot": "dist/",
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "outDir":  "dist/",
     "removeComments": false,
@@ -19,5 +26,8 @@
   "exclude": [
     "node_modules",
     "dist"
+  ],
+  "include": [
+    "src"
   ]
 }

@@ -9,3 +9,7 @@ export function values(obj: object): Array<string> {
     
     return res;
 }
+
+export function enumHas(enm: object, value: any): boolean {
+    return values(enm).indexOf(value) > -1;
+}
