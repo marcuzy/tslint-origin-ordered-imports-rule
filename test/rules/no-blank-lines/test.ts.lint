@@ -9,7 +9,7 @@ import {
     E
 ~~~~~
 } from 'lib3';
-~~~~~~~~~~~~~~ [Blank lines between node_modules import and custom import]
+~~~~~~~~~~~~~~ [Blank lines between "Lib import" and "User import"]
 
 import * as bar from './a';
 import {

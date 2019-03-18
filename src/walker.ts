@@ -68,12 +68,12 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
             const current = this.options.modulesOrder.findImportGroup(source);
             const prev = this.options.modulesOrder.getCurrentImportGroup();
 
-            this.addFailureAtNode(node, `Check imports order (Import of "${ current.getTitle() }" must be higher than import of "${ prev.getTitle() }")`);
+            this.addFailureAtNode(node, `"${ current.getTitle() }" must be higher than "${ prev.getTitle() }"`);
         }
     }
     
     protected checkEmptyLine(node: AnyImportDeclaration, source: string): void {
-        const orderItemIndex = this.options.modulesOrder.findOrderItemIndex(source);
+        const importGroup = this.options.modulesOrder.findImportGroup(source);
 
         const nodeLine = ts
             .getLineAndCharacterOfPosition(
@@ -89,9 +89,9 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
         }
 
         const nextSource = this.getModuleName(<AnyImportDeclaration>nextNode);
-        const nextOrderItemIndex = this.options.modulesOrder.findOrderItemIndex(nextSource);
+        const nextImportGroup = this.options.modulesOrder.findImportGroup(nextSource);
 
-        if (nextOrderItemIndex <= orderItemIndex) {
+        if (nextImportGroup.index <= importGroup.index) {
             return;
         }
     
@@ -105,23 +105,25 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
         const totalLinesCountBetweenNodes = nextNodeLine - nodeLine - 1;
         const blankLinesCount = totalLinesCountBetweenNodes - this.getNodeLeadingCommentedLinesCount(<AnyImportDeclaration>nextNode);
         
+        const postfix = `between "${importGroup.getTitle()}" and "${nextImportGroup.getTitle()}"`;
+
         let failed = false;
         let whyFailed = '';
         
         switch (this.options.blankLines) {
             case BlankLinesOption.One:
                 failed = blankLinesCount !== 1;
-                whyFailed = 'One blank line required between node_modules import and custom import';
+                whyFailed = `One blank line required ${postfix}`;
                 
                 break;
             case BlankLinesOption.No:
                 failed = blankLinesCount !== 0;
-                whyFailed = 'Blank lines between node_modules import and custom import';
+                whyFailed = `Blank lines ${postfix}`;
                 
                 break;
             case BlankLinesOption.AtLeastOne:
                 failed = blankLinesCount === 0;
-                whyFailed = 'At least one blank line required between node_modules import and custom import';
+                whyFailed = `At least one blank line required ${postfix}`;
         }
     
         if (failed) {

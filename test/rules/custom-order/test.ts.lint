@@ -13,4 +13,4 @@ import {
 } from './b';
 
 import test from '@mycustom/something';
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [Check imports order (Import of "Module with custom rule: /^@mycustom\/.+/" must be higher than import of "User module")]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ["Custom import /^@mycustom\/.+/" must be higher than "User import"]

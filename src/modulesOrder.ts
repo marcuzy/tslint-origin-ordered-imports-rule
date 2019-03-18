@@ -16,7 +16,7 @@ export default class ModulesOrder {
             optionsItems = [ ...optionsItems, ModuleType.User ];
         }
 
-        this.importGroups = optionsItems.map(_ => new ImportGroup(_));
+        this.importGroups = optionsItems.map((_, i) => new ImportGroup(_, i));
     }
 
     check(path: string): boolean {
@@ -31,10 +31,6 @@ export default class ModulesOrder {
         this.groupIndex += index;
 
         return true;
-    }
-
-    findOrderItemIndex(path: string): number {
-        return this.findImportGroupIndexWith(index => index, path);
     }
 
     findImportGroup(path: string): ImportGroup {
@@ -71,7 +67,7 @@ export class ImportGroup {
     readonly type: ModuleType;
     private readonly customRule?: RegExp;
 
-    constructor(optionsItem: string) {
+    constructor(optionsItem: string, readonly index: number) {
         if (enumHas(ModuleType, optionsItem)) {
             this.type = optionsItem as any;
         } else {
@@ -101,11 +97,11 @@ export class ImportGroup {
     getTitle(): string {
         switch(this.type) {
             case ModuleType.Lib:
-                return 'NodeJS Core module / node_modules';
+                return 'Lib import';
             case ModuleType.User:
-                return 'User module';
+                return 'User import';
             case ModuleType.CustomRule:
-                return `Module with custom rule: ${this.customRule.toString()}`;
+                return `Custom import ${this.customRule.toString()}`;
         }
     }
 }

@@ -1,6 +1,5 @@
 src
-build
-example
 tsconfig.json
 .gitignore
 .idea
+.travis.yml

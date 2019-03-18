@@ -3,9 +3,9 @@
 # TSLint Origin Ordered Imports Rule
 > Custom rule for tslint
 
-Strict order for imports (Import of `NodeJS Core module / node_modules` must be higher than import of `User module`) + your own import groups defined using regexps.
+Strict order for imports ("Lib import" must be higher than "User import") + your own import groups defined by regexps.
 
-🚀This plugin needs minimum configuration to start:
+🚀 This plugin needs minimum configuration to start:
 
 ```shell
 npm i -D tslint-origin-ordered-imports-rule
