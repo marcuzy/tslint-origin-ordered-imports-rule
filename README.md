@@ -8,7 +8,7 @@ Strict order for imports ("Lib import" must be higher than "User import") + your
 🚀 This plugin needs minimum configuration to start:
 
 ```shell
-npm i -D tslint-origin-ordered-imports-rule@beta
+npm i -D tslint-origin-ordered-imports-rule
 ```
 
 *tslint.json*
