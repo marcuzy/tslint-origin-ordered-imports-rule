@@ -30,7 +30,7 @@ export default class ModulesOrder {
                 .findIndex(item => item.check(path)); // look ahead to check if there are more specific cases
 
             if (anotherIndex >= 0) {
-                index += anotherIndex;
+                index += anotherIndex + 1;
             }
         }
 
