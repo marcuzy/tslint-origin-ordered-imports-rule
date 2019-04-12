@@ -1,0 +1,15 @@
+{
+  "rulesDirectory": "../../../dist",
+  "rules": {
+    "origin-ordered-imports": [ 
+      true, 
+      "one-blank-line",
+      [
+        "lib",
+        "user",
+        "testcustom1",
+        "testcustom2"
+      ]
+    ]
+  }
+}
