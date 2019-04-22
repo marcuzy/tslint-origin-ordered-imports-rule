@@ -1,0 +1,17 @@
+import { A, B, C }  from 'lib1';
+
+import * as bar from './a';
+import {
+    V,
+    B
+} from './b';
+
+import Cl1_correct_order from './testcustom1';
+
+import Cl1_correct_order from './testcustom2';
+
+
+import Cl2_wrong_order from './testcustom2';
+
+import Cl2_wrong_order from './testcustom1';
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ["Custom import /testcustom1/" must be higher than "Custom import /testcustom2/"]
