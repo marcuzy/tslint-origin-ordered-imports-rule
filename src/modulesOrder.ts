@@ -20,18 +20,15 @@ export default class ModulesOrder {
     }
 
     check(path: string): boolean {
+        // built-in ModuleTypes can intersect with CustomRules so first we try to find something among CustomRules
         let index = this.importGroups
             .slice(this.groupIndex)
-            .findIndex(item => item.check(path));
+            .findIndex(item => item.type === ModuleType.CustomRule && item.check(path));
 
-        if (this.importGroups[this.groupIndex + index].type === ModuleType.User) {
-            let anotherIndex = this.importGroups
-                .slice(this.groupIndex + index + 1)
-                .findIndex(item => item.check(path)); // look ahead to check if there are more specific cases
-
-            if (anotherIndex >= 0) {
-                index += anotherIndex + 1;
-            }
+        if (index === -1) {
+            index = this.importGroups
+                .slice(this.groupIndex)
+                .findIndex(item => item.type !== ModuleType.CustomRule && item.check(path));
         }
 
         if (index === -1) {
