@@ -2,8 +2,9 @@ import * as ts from 'typescript';
 import * as Lint from 'tslint';
 import * as tsutils from 'tsutils';
 
-import ModulesOrder from './modulesOrder';
+import ModulesOrder, { ImportGroup, ModuleType } from './modulesOrder';
 import { BlankLinesOption } from './originOrderedImportsRule';
+import { Fix } from 'tslint';
 
 type AnyImportDeclaration = ts.ImportDeclaration | ts.ImportEqualsDeclaration;
 
@@ -62,13 +63,32 @@ export default class Walker extends Lint.AbstractWalker<{ blankLines: BlankLines
             this.checkEmptyLine(node, source);
         }
     }
+
+    importNodes: AnyImportDeclaration[][] = [];
     
     protected checkOrder(node: AnyImportDeclaration, source: string): void {
+        const current = this.options.modulesOrder.findImportGroup(source);
+
+       
+
         if (!this.options.modulesOrder.check(source)) {
-            const current = this.options.modulesOrder.findImportGroup(source);
+            //const current = this.options.modulesOrder.findImportGroup(source);
             const prev = this.options.modulesOrder.getCurrentImportGroup();
 
+            this.importNodes[current.index][0].pos
+
+            const fix: Fix = [
+                Lint.Replacement.deleteFromTo(node.pos, node.end),
+                Lint.Replacement.appendText()
+            ]
+
             this.addFailureAtNode(node, `"${ current.getTitle() }" must be higher than "${ prev.getTitle() }"`);
+        } else {
+            if (this.importNodes[current.index] === undefined) {
+                this.importNodes[current.index] = [];
+            }
+    
+            this.importNodes[current.index].push(node);
         }
     }
     
